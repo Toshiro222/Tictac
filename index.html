@@ -92,25 +92,20 @@
     </div>
   </div>
 
-  <!-- 1. I-declare muna ang SERVER variable -->
+  <!-- 1. Declare the SERVER variable -->
   <script>
-<<<<<<< HEAD
-    var SERVER = "https://tictac-4omr.onrender.com";
-=======
-    // Picks the right game server automatically:
-    //  - port 3000 (node server.js)        -> same origin
-    //  - localhost / 127.0.0.1 (Live Server) -> your local server on port 3000
-    //  - anywhere else (Vercel)            -> your Render backend
-    var RENDER_URL = "https://tictac-4omr.onrender.com";
+    // Automatic server detection:
+    //  - port 3000 (local node server) -> same origin
+    //  - localhost / 127.0.0.1 -> local server on port 3000
+    //  - anywhere else (deployed) -> Render backend
+    var RENDER_URL = "https://tictac-4omf.onrender.com"; // <-- Tama na URL base sa Render dashboard mo
     var host = location.hostname;
     var isLocal = host === "localhost" || host === "127.0.0.1" || host === "";
     var SERVER = location.port === "3000" ? "" : (isLocal ? "http://" + (host || "localhost") + ":3000" : RENDER_URL);
-    // client.js loads socket.io in the background, so the page (and Vs Computer) never waits on the server.
->>>>>>> 08ff724 (welskie)
   </script>
   
   <!-- 2. Load socket.io mula sa Render backend -->
-  <script src="https://tictac-4omr.onrender.com/socket.io/socket.io.js"></script>
+  <script src="https://tictac-4omf.onrender.com/socket.io/socket.io.js"></script>
   
   <!-- 3. Load the rest of the scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
