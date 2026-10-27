@@ -3,7 +3,7 @@
    ========================================================================== */
 
 // 1. I-declare ang Render URL
-const BACKEND_URL = "https://tictac-4omr.onrender.com";
+const BACKEND_URL = "https://tictac-4omf.onrender.com";
 
 // 2. Function para i-load ang socket.io nang dynamic
 function loadSocketIO(callback) {
