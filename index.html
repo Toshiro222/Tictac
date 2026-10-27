@@ -6,8 +6,8 @@
   <title>Tic Tac Toe</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" /> 
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;800;900&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div id="ui">
@@ -23,21 +23,44 @@
         <button id="joinBtn">Join</button>
       </div>
       <p id="error" class="error"></p>
+      <p class="muted divider">or play offline</p>
+      <div class="row">
+        <select id="levelSelect" aria-label="Difficulty">
+          <option value="easy">Easy</option>
+          <option value="normal" selected>Normal</option>
+          <option value="hard">Unbeatable</option>
+        </select>
+        <button id="soloBtn">Vs Computer</button>
+      </div>
     </section>
 
     <!-- GAME HUD -->
     <div id="hud" hidden>
       <div class="glass room">
-        <span class="muted">Room</span>
+        <span id="roomLabel" class="muted">Room</span>
         <button id="roomCode" class="code mono" title="Copy room code"></button>
         <button id="homeBtn" class="ghost">Leave</button>
       </div>
 
-      <div class="glass score">
-        <div class="s"><span id="nameX"></span><b id="pointsX"></b></div>
-        <div class="s mid"><span>Draws</span><b id="pointsD"></b></div>
-        <div class="s"><span id="nameO"></span><b id="pointsO"></b></div>
+      <div class="glass score" role="group" aria-label="Scoreboard">
+        <div class="s s-x" id="cardX">
+          <span class="who"><i class="mark mark-x">X</i><em id="nameX"></em></span>
+          <b id="pointsX">0</b>
+        </div>
+        <div class="s s-d" id="cardD">
+          <span class="who"><i class="mark mark-d">=</i><em>Draws</em></span>
+          <b id="pointsD">0</b>
+        </div>
+        <div class="s s-o" id="cardO">
+          <span class="who"><i class="mark mark-o">O</i><em id="nameO"></em></span>
+          <b id="pointsO">0</b>
+        </div>
       </div>
+
+      <button id="muteBtn" class="glass mute" aria-label="Toggle sound" title="Sound on/off">
+        <svg id="iconOn" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+        <svg id="iconOff" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" hidden><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M22 9l-6 6"/><path d="M16 9l6 6"/></svg>
+      </button>
 
       <div class="status-wrap">
         <div class="glass status">
@@ -55,11 +78,35 @@
         </div>
       </details>
     </div>
+
+    <!-- WIN / LOSE / DRAW OVERLAY -->
+    <div id="result" class="result" hidden aria-live="assertive">
+      <div class="result-card">
+        <p id="resultSub" class="result-sub"></p>
+        <h2 id="resultTitle" class="result-title"></h2>
+        <div class="result-actions">
+          <button id="againBtn" class="btn3d">Play Again</button>
+          <button id="viewBtn" class="ghost">View board</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- 1. I-declare muna ang SERVER variable -->
   <script>
+<<<<<<< HEAD
     var SERVER = "https://tictac-4omr.onrender.com";
+=======
+    // Picks the right game server automatically:
+    //  - port 3000 (node server.js)        -> same origin
+    //  - localhost / 127.0.0.1 (Live Server) -> your local server on port 3000
+    //  - anywhere else (Vercel)            -> your Render backend
+    var RENDER_URL = "https://tictac-4omr.onrender.com";
+    var host = location.hostname;
+    var isLocal = host === "localhost" || host === "127.0.0.1" || host === "";
+    var SERVER = location.port === "3000" ? "" : (isLocal ? "http://" + (host || "localhost") + ":3000" : RENDER_URL);
+    // client.js loads socket.io in the background, so the page (and Vs Computer) never waits on the server.
+>>>>>>> 08ff724 (welskie)
   </script>
   
   <!-- 2. Load socket.io mula sa Render backend -->
@@ -67,6 +114,7 @@
   
   <!-- 3. Load the rest of the scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="sfx.js"></script>
   <script src="game3d.js"></script>
   <script src="client.js"></script>
 </body>

@@ -160,19 +160,30 @@ const Board3D = (() => {
     gh.position.copy(cellPos(cell)).setY(C.tileH + gh.userData.h / 2);
     gh.visible = true;
   }
+  // Which empty cell is under the pointer? (-1 = none)
+  function cellAt(e) {
+    ndc.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
+    raycaster.setFromCamera(ndc, camera);
+    const hit = raycaster.intersectObjects(tiles, false)[0];
+    return hit && !pieces[hit.object.userData.cell] ? hit.object.userData.cell : -1;
+  }
   function updateHover(e) {
     mouse.x = (e.clientX / innerWidth) * 2 - 1; mouse.y = (e.clientY / innerHeight) * 2 - 1;
     if (!interactive) return setHover(-1);
-    ndc.set(mouse.x, -mouse.y);
-    raycaster.setFromCamera(ndc, camera);
-    const hit = raycaster.intersectObjects(tiles, false)[0];
-    setHover(hit && !pieces[hit.object.userData.cell] ? hit.object.userData.cell : -1);
+    setHover(cellAt(e));
   }
-  renderer.domElement.addEventListener('pointermove', updateHover);
-  renderer.domElement.addEventListener('pointerdown', updateHover); // touch: select the tapped cell
-  renderer.domElement.addEventListener('pointerleave', () => setHover(-1));
-  renderer.domElement.addEventListener('click', () => {
-    if (interactive && hovered >= 0 && api.onCellClick) api.onCellClick(hovered);
+  const el = renderer.domElement;
+  el.addEventListener('pointermove', updateHover);
+  el.addEventListener('pointerdown', updateHover);               // touch: preview the tapped cell
+  el.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') setHover(-1); });
+  el.addEventListener('pointercancel', () => setHover(-1));
+  // Place on release. A phone fires pointerleave BEFORE click, which used to wipe the hovered
+  // cell and cancel the move, so we raycast again right here instead of relying on hover state.
+  el.addEventListener('pointerup', (e) => {
+    if (!interactive || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    const cell = cellAt(e);
+    setHover(-1);
+    if (cell >= 0 && api.onCellClick) api.onCellClick(cell);
   });
 
   /* ----- Placing / removing pieces ----- */
