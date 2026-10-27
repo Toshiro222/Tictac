@@ -1,12 +1,13 @@
 /* ==========================================================================
    client.js — socket + game state → 3D board and glass HUD
-   Look for "INTEGRATION POINT" to see where game state flows in and out.
    ========================================================================== */
-const socket = typeof SERVER !== "undefined" && SERVER ? io(SERVER) : io();
+
+// Kokonekta ito sa Render URL na naka-set sa index.html
+const socket = io(SERVER);
 const $ = (id) => document.getElementById(id);
 
 let mySymbol = null;   // "X" or "O" (set when you create/join a room)
-let state = null;      // latest server state: { board, turn, names, scores, over, winner, line, playerCount }
+let state = null;      // latest server state
 
 /* ---------- Lobby (a name is required) ---------- */
 const getName = () => $("nameInput").value.trim();
@@ -37,27 +38,26 @@ Board3D.sync(["X", "O", null, null, "X", null, "X", null, "O"]);
 
 /* ---------- Joined a room ---------- */
 socket.on("joined", ({ code, symbol }) => {
-  mySymbol = symbol;                      // INTEGRATION POINT: current player
+  mySymbol = symbol;                      
   $("roomCode").textContent = code;
   $("lobby").hidden = true;
   $("hud").hidden = false;
-  Board3D.reset();                        // clear the demo pieces
-  Board3D.setPlayer(symbol);              // which ghost token to preview
-  Board3D.setMode("game");                // board glides to the centre
+  Board3D.reset();                        
+  Board3D.setPlayer(symbol);              
+  Board3D.setMode("game");                
 });
 
 /* ---------- 3D click → server ---------- */
-// INTEGRATION POINT: user clicked an empty 3D cell
 Board3D.onCellClick = (cellIndex) => socket.emit("makeMove", cellIndex);
 
 /* ---------- Server state → 3D + HUD ---------- */
 socket.on("state", (s) => { state = s; render(); });
 
 function render() {
-  const { board, turn, names, scores, over, winner, line, playerCount } = state;  // INTEGRATION POINT: grid, turn, scores
+  const { board, turn, names, scores, over, winner, line, playerCount } = state;
 
-  Board3D.sync(board, line);                                          // draw tokens + winning line glow
-  Board3D.setInteractive(!over && playerCount === 2 && turn === mySymbol);  // only on your turn
+  Board3D.sync(board, line);                                          
+  Board3D.setInteractive(!over && playerCount === 2 && turn === mySymbol);  
 
   $("nameX").textContent = names.X || "…";   $("pointsX").textContent = scores.X;
   $("nameO").textContent = names.O || "…";   $("pointsO").textContent = scores.O;
@@ -72,7 +72,7 @@ function render() {
 }
 
 $("rematchBtn").onclick = () => socket.emit("rematch");
-$("homeBtn").onclick = () => location.reload();   // leave the room, back to the lobby
+$("homeBtn").onclick = () => location.reload();   
 $("roomCode").onclick = () => navigator.clipboard && navigator.clipboard.writeText($("roomCode").textContent);
 
 socket.on("opponentLeft", () => {
@@ -95,7 +95,7 @@ $("chatInput").addEventListener("keydown", (e) => e.key === "Enter" && sendChat(
 socket.on("chat", ({ name, text }) => {
   const p = document.createElement("p"), b = document.createElement("b");
   b.textContent = name + " ";
-  p.append(b, document.createTextNode(text));   // textContent keeps it safe from HTML injection
+  p.append(b, document.createTextNode(text));   
   $("messages").appendChild(p);
   $("messages").scrollTop = $("messages").scrollHeight;
 });
