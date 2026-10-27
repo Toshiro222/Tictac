@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tic Tac Toe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- The 3D canvas (#scene) is created by game3d.js and sits behind this overlay -->
+  <div id="ui">
+
+    <!-- LOBBY -->
+    <section id="lobby" class="glass">
+      <h1>Tic Tac Toe</h1>
+      <p class="muted">Two players. One board.</p>
+      <input id="nameInput" placeholder="Your name" maxlength="16" autocomplete="off" />
+      <button id="createBtn" class="primary">Create room</button>
+      <p class="muted divider">or join a friend</p>
+      <div class="row">
+        <input id="codeInput" class="mono" placeholder="Room code" maxlength="4" autocomplete="off" />
+        <button id="joinBtn">Join</button>
+      </div>
+      <p id="error" class="error"></p>
+    </section>
+
+    <!-- GAME HUD -->
+    <div id="hud" hidden>
+      <div class="glass room">
+        <span class="muted">Room</span>
+        <button id="roomCode" class="code mono" title="Copy room code"></button>
+        <button id="homeBtn" class="ghost">Leave</button>
+      </div>
+
+      <div class="glass score">
+        <div class="s"><span id="nameX"></span><b id="pointsX"></b></div>
+        <div class="s mid"><span>Draws</span><b id="pointsD"></b></div>
+        <div class="s"><span id="nameO"></span><b id="pointsO"></b></div>
+      </div>
+
+      <div class="status-wrap">
+        <div class="glass status">
+          <span id="status"></span>
+          <button id="rematchBtn" class="primary" hidden>Play again</button>
+        </div>
+      </div>
+
+      <details class="glass chat">
+        <summary>Chat</summary>
+        <div id="messages"></div>
+        <div class="row">
+          <input id="chatInput" placeholder="Say something…" maxlength="200" autocomplete="off" />
+          <button id="chatBtn">Send</button>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <script>
+    // Works from Live Server (5500) and from the game server (3000)
+    var SERVER = location.port === "3000" ? "" : "http://" + (location.hostname || "localhost") + ":3000";
+    document.write('<script src="' + SERVER + '/socket.io/socket.io.js"><\/script>');
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="game3d.js"></script>
+  <script src="client.js"></script>
+</body>
+</html>

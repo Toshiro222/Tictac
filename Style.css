@@ -1,0 +1,94 @@
+/* Obsidian + champagne gold. Glass panels float above the 3D canvas. */
+:root {
+  --bg: #111111;
+  --text: #ecebe6;
+  --muted: rgba(236, 235, 230, 0.55);
+  --gold: #d4af37;
+  --line: rgba(255, 255, 255, 0.1);
+  --glass: rgba(255, 255, 255, 0.03);
+}
+* { box-sizing: border-box; }
+
+html { background: radial-gradient(ellipse at 50% 35%, #262626 0%, var(--bg) 55%, #090909 100%); min-height: 100%; }
+body {
+  margin: 0; min-height: 100vh; overflow: hidden; color: var(--text);
+  font-family: "Inter", "SF Pro Display", system-ui, sans-serif; font-weight: 300; letter-spacing: 0.01em;
+}
+.mono { font-family: "Roboto Mono", ui-monospace, monospace; }
+.muted { color: var(--muted); margin: 0; font-size: 0.85rem; }
+
+#scene { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; display: block; touch-action: none; }
+#ui { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+[hidden] { display: none !important; }
+
+/* Glass */
+.glass {
+  pointer-events: auto;
+  background: var(--glass);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+/* Controls */
+input {
+  width: 100%; padding: 13px 14px; border-radius: 12px;
+  border: 1px solid var(--line); background: rgba(255, 255, 255, 0.04);
+  color: var(--text); font: inherit; font-size: 0.95rem;
+}
+input::placeholder { color: rgba(236, 235, 230, 0.35); }
+button {
+  padding: 12px 18px; border-radius: 12px; cursor: pointer;
+  border: 1px solid var(--line); background: rgba(255, 255, 255, 0.05);
+  color: var(--text); font: inherit; font-weight: 400; font-size: 0.9rem;
+  transition: background 0.2s, border-color 0.2s;
+}
+button:hover { background: rgba(255, 255, 255, 0.1); }
+button.primary { background: var(--gold); border-color: var(--gold); color: #17130a; font-weight: 500; }
+button.primary:hover { background: #e2bf4d; }
+button.ghost { padding: 6px 12px; font-size: 0.8rem; color: var(--muted); }
+button:disabled, input:disabled { opacity: 0.4; cursor: not-allowed; }
+input:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.row { display: flex; gap: 8px; }
+.row input { flex: 1; min-width: 0; }
+
+/* Lobby */
+#lobby {
+  position: absolute; left: max(5vw, 24px); top: 50%; transform: translateY(-50%);
+  width: min(360px, calc(100vw - 32px)); padding: 28px; display: flex; flex-direction: column; gap: 14px;
+}
+#lobby h1 { margin: 0; font-size: 1.9rem; font-weight: 300; letter-spacing: 0.02em; }
+#lobby .divider { text-align: center; }
+.error { color: #e8a0a0; min-height: 1.1em; margin: 0; font-size: 0.85rem; }
+
+/* HUD */
+#hud > * { position: absolute; }
+.room { top: 20px; left: 20px; padding: 8px 8px 8px 16px; display: flex; align-items: center; gap: 12px; }
+.code { padding: 6px 12px; letter-spacing: 0.3em; color: var(--gold); font-size: 1rem; }
+.score { top: 20px; right: 20px; display: flex; padding: 12px 8px; }
+.s { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 0 18px; font-size: 0.8rem; color: var(--muted); }
+.s b { font-family: "Roboto Mono", monospace; font-size: 1.4rem; font-weight: 400; color: var(--text); }
+.s.mid { border-inline: 1px solid var(--line); }
+
+.status-wrap { left: 0; right: 0; bottom: 24px; display: flex; justify-content: center; pointer-events: none; }
+.status { display: flex; align-items: center; gap: 16px; padding: 12px 22px; font-size: 0.95rem; border-radius: 999px; }
+.status button { padding: 8px 16px; }
+#status::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 10px; border-radius: 50%; background: var(--muted); }
+#status[data-mine="1"]::before { background: var(--gold); box-shadow: 0 0 10px var(--gold); }
+
+.chat { left: 20px; bottom: 20px; width: 260px; padding: 12px 14px; font-size: 0.85rem; }
+.chat summary { cursor: pointer; color: var(--muted); list-style: none; }
+.chat[open] summary { margin-bottom: 8px; }
+#messages { height: 110px; overflow-y: auto; margin-bottom: 8px; }
+#messages p { margin: 0 0 4px; }
+#messages b { font-weight: 500; color: var(--gold); }
+.chat input { padding: 9px 10px; font-size: 0.85rem; }
+.chat button { padding: 9px 12px; }
+
+@media (max-width: 720px) {
+  #lobby { left: 16px; right: 16px; top: auto; bottom: 24px; transform: none; width: auto; padding: 22px; }
+  .score { top: 76px; left: 20px; right: 20px; justify-content: space-around; }
+  .chat { bottom: 80px; left: 20px; right: 20px; width: auto; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
